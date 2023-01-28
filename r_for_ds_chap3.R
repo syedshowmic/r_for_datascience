@@ -85,6 +85,7 @@ filter(df, is.na(x) | x>1) # returns NA and 3
 # EXCERCISE
 
 
+
 # arrange rows with arrage()
 arrange(flights, year, month, day)
 
@@ -102,6 +103,28 @@ desc_example2 <- arrange(flights, desc(sched_arr_time), desc(air_time)) # obtain
 
 
 # EXCERCISE
+# 1. How can you use arrange to sort all missing values to the start?
+#  (Hint: use is.na() )
+arrange(df, x) #puts NA at the end
+arrange(df, desc(is.na(x)), x) # puts NA at the top
+
+# 2.a
+arrange(flights, desc(dep_delay)) # most delayed
+# 2.b
+arrange(flights, dep_time)
+
+# 3
+view(arrange(flights, air_time))
+
+# 4
+view(arrange(flights, distance)) # shortest
+view(arrange(flights, desc(distance))) #longest
+
+# testing is.na for multiple columns
+df2 <- tibble(col1= c(1, 3, 2, NA, 9, 6),
+              col2= c(NA, 2.5, 2.9, NA, 9.4, 6.1))
+
+arrange(df2, desc(is.na(col1)), desc(is.na(col2)), col1, col2)
 
 # select columns
 
@@ -145,3 +168,29 @@ select(flights, dep_delay, sched_dep_time, everything()) #this moves dep_delay a
 # EXCERCISE
 
 
+# mutate()
+
+# besides selecting existing columns sometimes its useful to add new columns
+# mutate always adds columns to the end of the dataset 
+# the easiest way to view data is view(dataset_name)
+
+# selecting specific columns
+flights_sml <- select(flights,
+                      year:day,
+                      ends_with('delay'),
+                      distance,
+                      air_time
+                      )
+# using mutate
+mutate(flights_sml,
+       gain = arr_delay - dep_delay, # this is a new column of data that we created
+       speed = distance /air_time * 60 # another new column
+       )
+
+# note that you can refer to columns that you've just created
+mutate(flights_sml,
+       gain = arr_delay - dep_delay, # this is a new column of data that we created
+       speed = distance /air_time * 60, # another new column
+       gain_per_hour = gain/hour
+)
+      
